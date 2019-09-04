@@ -1,7 +1,5 @@
 const fs = require("fs");
 const path = require("path");
-const mkdirp = require("mkdirp");
-const prettier = require("prettier");
 const execSync = require("child_process").execSync;
 const os = require("os");
 
@@ -45,14 +43,6 @@ function compileRuntime({inputFile, inputWasmFile, format}) {
     );
 
     let source = runtimeText;
-    if (format) {
-        console.debug("Formatting code");
-        source = prettier.format(source, {
-            printWidth: 200,
-            tabWidth: 4,
-            parser: "babylon"
-        });
-    }
 
     fs.writeFileSync(path.join(OUTPUT_DIRECTORY, inputFile), source);
 }
