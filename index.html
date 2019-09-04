@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>emtest</title>
+    <script>
+        var Emtest = function(module) {
+            
+            this.results = {
+                average: {
+                    speedtest_js_vector: 0,
+                    speedtest_cpp_vector: 0,
+                    speedtest_js_array: 0,
+                    speedtest_js_vector_read: 0
+                },
+                speedtest_js_vector: [],
+                speedtest_cpp_vector: [],
+                speedtest_js_array: [],
+                speedtest_js_vector_read: [],
+            };
+
+            this.speedtest_js_vector = function(results) {
+                var vectors = [];
+                var start = performance.now();
+                for (var i = 0; i < 100; i++) {
+                    var v = module.make_string_vector();
+                    for (var j = 0; j < 100; j++) {
+                        v.push_back("new_string");
+                    }
+                    vectors.push(v);
+                }
+                var end = performance.now();
+                for (var i = 0; i < vectors.length; i++) {
+                    vectors[i].delete();
+                }
+
+                results.speedtest_js_vector.push(end - start);
+            }
+
+            this.speedtest_js_vector_read = function(results) {
+                var start = performance.now();
+                var vectors = [];
+
+                for (var i = 0; i < 100; i++) {
+                    var v = module.make_string_vector();
+                    for (var j = 0; j < 100; j++) {
+                        v.push_back("new_string");
+                    }
+                    vectors.push(v);
+                }
+
+                var result = module.speedtest_js_vector_read(vectors);
+                
+                for (var i = 0; i < vectors.length; i++) {
+                    vectors[i].delete();
+                }
+
+                
+                var end = performance.now();
+                results.speedtest_js_vector_read.push(end - start);
+            }
+
+            this.speedtest_cpp_vector = function(results) {
+                var start = performance.now();
+                var result = module.speedtest_cpp_vector()
+                var end = performance.now();
+                results.speedtest_cpp_vector.push(end - start);
+            }
+
+            this.speedtest_js_array = function(results) {
+                var start = performance.now();
+                var result = module.speedtest_js_array();
+                var end = performance.now();
+                results.speedtest_js_array.push(end - start);
+            }
+
+            this.get_average = function(results) {
+                var reducer = function(acc, curr) { return acc + curr };
+                return results.reduce(reducer) / results.length;
+            }
+
+            return {
+                results: this.results,
+                run_all: function(results) {
+                    for (let i = 0; i < 10; i++) {
+                        this.speedtest_cpp_vector(results);
+                        this.speedtest_js_vector_read(results);
+                        this.speedtest_js_vector(results);
+                        this.speedtest_js_array(results);
+                    }
+
+                    results.average.speedtest_cpp_vector = get_average(results.speedtest_cpp_vector);
+                    results.average.speedtest_js_vector = get_average(results.speedtest_js_vector);
+                    results.average.speedtest_js_array = get_average(results.speedtest_js_array);
+                    results.average.speedtest_js_vector_read = get_average(results.speedtest_js_vector_read);
+
+                    return results;
+                },
+                speedtest_cpp_vector: this.speedtest_cpp_vector,
+                speedtest_js_vector: this.speedtest_js_vector,
+                speedtest_js_array: this.speedtest_js_array,
+                speedtest_js_vector_read: this.speedtest_js_vector_read
+            }
+        }
+        
+        var Module = {
+            onRuntimeInitialized: function() {
+                var emtest_instance = Emtest(Module);
+                var test_results = emtest_instance.run_all(emtest_instance.results);
+                var elem = document.getElementById("results");
+                elem.textContent = JSON.stringify(test_results, null, '\t');
+            }
+        }
+    </script>
+    <script src="dist/emtest.async.js"></script>
+</head>
+<body>
+    <p>100 containers with 100 elements, saturate 10x (time in ms)</p>
+    <code id="results"></code>
+</body>
+</html>

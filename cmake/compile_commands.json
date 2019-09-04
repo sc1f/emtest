@@ -1,0 +1,12 @@
+[
+{
+  "directory": "/Volumes/files/jpmc/emtest/cmake",
+  "command": "/Volumes/files/jpmc/emsdk/upstream/emscripten/em++   @CMakeFiles/emtestrunner.async.dir/includes_CXX.rsp   -s -s BINARYEN_ASYNC_COMPILATION=1 --bind -s WASM=1 -std=gnu++14 -o CMakeFiles/emtestrunner.async.dir/Volumes/files/jpmc/emtest/src/cpp/emtest.cpp.o -c /Volumes/files/jpmc/emtest/src/cpp/emtest.cpp",
+  "file": "/Volumes/files/jpmc/emtest/src/cpp/emtest.cpp"
+},
+{
+  "directory": "/Volumes/files/jpmc/emtest/cmake",
+  "command": "/Volumes/files/jpmc/emsdk/upstream/emscripten/em++   @CMakeFiles/emtest.dir/includes_CXX.rsp   -s -s BINARYEN_ASYNC_COMPILATION=1 --bind -s WASM=1 -std=gnu++14 -o CMakeFiles/emtest.dir/Volumes/files/jpmc/emtest/src/cpp/emtest.cpp.o -c /Volumes/files/jpmc/emtest/src/cpp/emtest.cpp",
+  "file": "/Volumes/files/jpmc/emtest/src/cpp/emtest.cpp"
+}
+]
